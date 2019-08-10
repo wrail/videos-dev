@@ -1,0 +1,6 @@
+# Project exclude paths
+/videos-dev-common/target/
+/videos-dev-mapper/target/
+/videos-dev-mini-api/target/
+/videos-dev-pojo/target/
+/videos-dev-service/target/

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="videos-dev-pojo" />
+        <module name="videos-dev-mini-api" />
+        <module name="videos-dev-common" />
+        <module name="videos-dev-service" />
+        <module name="videos-dev-mapper" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="videos-dev" target="1.8" />
+      <module name="videos-dev-common" target="1.8" />
+      <module name="videos-dev-mapper" target="1.8" />
+      <module name="videos-dev-mini-api" target="1.8" />
+      <module name="videos-dev-pojo" target="1.8" />
+      <module name="videos-dev-service" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="videos-dev-common" options="-parameters" />
+      <module name="videos-dev-mapper" options="-parameters" />
+      <module name="videos-dev-mini-api" options="-parameters" />
+      <module name="videos-dev-pojo" options="-parameters" />
+      <module name="videos-dev-service" options="-parameters" />
+    </option>
+  </component>
+</project>

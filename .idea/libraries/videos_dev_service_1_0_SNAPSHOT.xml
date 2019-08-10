@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="videos-dev-service-1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/videos-dev-service/target/videos-dev-service-1.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

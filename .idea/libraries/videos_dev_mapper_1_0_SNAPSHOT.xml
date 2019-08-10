@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="videos-dev-mapper-1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/videos-dev-mapper/target/videos-dev-mapper-1.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
