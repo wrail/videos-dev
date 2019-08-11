@@ -67,7 +67,7 @@ public class Videos {
 1、发布成功
 2、禁止播放，管理员操作
      */
-    private Integer status;
+    private Integer status = 0;
 
     /**
      * 创建时间
