@@ -89,7 +89,9 @@ public class VideoServiceImpl implements VideoService {
         Long recordsCount = videosMapper.totalRecordsCount();
         pagedResult.setRecords(recordsCount);
         //总页数
-        pagedResult.setTotal((int) (recordsCount/pageSize)+1);
+        int totalPage = 0;
+        totalPage = recordsCount % pageSize == 0 ? (int) (recordsCount / pageSize) : (int) (recordsCount / pageSize) + 1;
+        pagedResult.setTotal(totalPage);
 
         return pagedResult;
     }
