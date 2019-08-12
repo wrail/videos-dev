@@ -6,8 +6,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 /*
-    使用ffmpeg进行格式转化和视频音频合并
+    使用ffmpeg进行格式转化和视频音频合并（不能直接合并，踩坑，直接合并的前提是无声）
+    1.先消去原来的音
+    2.在合并新的音频
  */
+
 
 public class MergeVideoMp3 {
 

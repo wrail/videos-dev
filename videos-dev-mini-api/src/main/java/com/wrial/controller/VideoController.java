@@ -12,14 +12,13 @@ import com.wrial.service.VideoService;
 import com.wrial.utils.FetchVideoCover;
 import com.wrial.utils.MergeVideoMp3;
 import com.wrial.utils.MyJSONResult;
+import com.wrial.utils.PagedResult;
 import enums.VideoStatusEnum;
 import io.swagger.annotations.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -226,6 +225,16 @@ public class VideoController extends BasicController {
         videoService.updateVideo(videoId, uploadPathDB);
 
         return MyJSONResult.ok();
+    }
+
+    @ApiOperation(value = "分页展示", notes = "分页展示所有的视频")
+    @GetMapping("/showAll")
+    public MyJSONResult showAll(@RequestParam(value = "page",defaultValue = "1")  Integer pageNum,
+                                @RequestParam(value = "pageSize",defaultValue = "5") Integer pageSize){
+
+        PagedResult result = videoService.getAllVideos(pageNum, pageSize);
+
+        return MyJSONResult.ok(result);
     }
 
 

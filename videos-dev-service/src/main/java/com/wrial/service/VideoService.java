@@ -7,6 +7,7 @@ package com.wrial.service;
 
 
 import com.wrial.pojo.Videos;
+import com.wrial.utils.PagedResult;
 
 public interface VideoService {
 
@@ -19,4 +20,11 @@ public interface VideoService {
      * @Description: 修改视频的封面
      */
     public void updateVideo(String videoId, String coverPath);
+
+    /**
+     * @Description: 分页查询视频列表
+     */
+    public PagedResult getAllVideos(Integer page, Integer pageSize);
+
+
 }
