@@ -227,14 +227,26 @@ public class VideoController extends BasicController {
         return MyJSONResult.ok();
     }
 
+
+    /*
+    得到所有视频，在有模糊查询条件时进行模糊查询
+     */
     @ApiOperation(value = "分页展示", notes = "分页展示所有的视频")
     @GetMapping("/showAll")
-    public MyJSONResult showAll(@RequestParam(value = "page",defaultValue = "1")  Integer pageNum,
-                                @RequestParam(value = "pageSize",defaultValue = "5") Integer pageSize){
+    public MyJSONResult showAll(@RequestParam(defaultValue = "null") String videoDesc,
+                                @RequestParam(value = "isSaveRecords", defaultValue = "0") Integer isSaveRecords,
+                                @RequestParam(value = "page", defaultValue = "1") Integer pageNum,
+                                @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
 
-        PagedResult result = videoService.getAllVideos(pageNum, pageSize);
+        PagedResult result = videoService.getAllVideos(videoDesc, isSaveRecords, pageNum, pageSize);
 
         return MyJSONResult.ok(result);
+    }
+
+    @ApiOperation(value = "热搜词",notes = "得到热搜词")
+    @GetMapping(value="/hot")
+    public MyJSONResult hot()  {
+        return MyJSONResult.ok(videoService.getHotWords());
     }
 
 

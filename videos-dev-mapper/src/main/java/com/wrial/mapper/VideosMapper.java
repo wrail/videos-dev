@@ -11,6 +11,7 @@ public interface VideosMapper extends MyMapper<Videos> {
     @Select("select count(*) from videos")
     Long totalRecordsCount();
 
-    @Select("select * from videos order by create_time desc")
-    List<Videos> selectAllByDesc();
+
+    @Select("select * from videos where video_desc like concat('%',#{desc},'%') order by create_time desc")
+    List<Videos> selectAllByDesc(String desc);
 }

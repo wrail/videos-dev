@@ -9,6 +9,8 @@ package com.wrial.service;
 import com.wrial.pojo.Videos;
 import com.wrial.utils.PagedResult;
 
+import java.util.List;
+
 public interface VideoService {
 
     /**
@@ -24,7 +26,10 @@ public interface VideoService {
     /**
      * @Description: 分页查询视频列表
      */
-    public PagedResult getAllVideos(Integer page, Integer pageSize);
+    public PagedResult getAllVideos(String videoDesc, Integer isSaveRecords, Integer page, Integer pageSize);
 
-
+    /**
+     * @Description: 拿到热搜词列表
+     */
+    List<String> getHotWords();
 }

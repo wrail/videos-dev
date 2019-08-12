@@ -7,8 +7,10 @@ package com.wrial.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wrial.mapper.SearchRecordsMapper;
 import com.wrial.mapper.UsersMapper;
 import com.wrial.mapper.VideosMapper;
+import com.wrial.pojo.SearchRecords;
 import com.wrial.pojo.Users;
 import com.wrial.pojo.Videos;
 import com.wrial.pojo.vo.VideosVO;
@@ -37,6 +39,9 @@ public class VideoServiceImpl implements VideoService {
     @Autowired
     private UsersMapper usersMapper;
 
+    @Autowired
+    private SearchRecordsMapper searchRecordsMapper;
+
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public String saveVideo(Videos video) {
@@ -60,14 +65,29 @@ public class VideoServiceImpl implements VideoService {
 
     /*
     分页展示所有的Video,就是主页上显示的，带有用户头像和昵称，因此会使用VideosVo
+    isSaveRecord：1 - 需要保存    0 - 不需要保存 ，或者为空的时候
      */
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public PagedResult getAllVideos(Integer pageNum, Integer pageSize) {
+    public PagedResult getAllVideos(String videoDesc, Integer isSaveRecords, Integer pageNum, Integer pageSize) {
+
+        if (videoDesc.equals("undefined")){
+            videoDesc = "";
+        }
+
+        if (isSaveRecords == 1) {
+            SearchRecords records = new SearchRecords();
+            records.setContent(videoDesc);
+            records.setId(sid.nextShort());
+            //保存热搜词
+            searchRecordsMapper.insert(records);
+        }
 
         List<VideosVO> videosVOS = new ArrayList<>();
 
         PageHelper.startPage(pageNum, pageSize);
-        List<Videos> videos = videosMapper.selectAllByDesc();
+        //如果存在desc的话就进行模糊查询
+        List<Videos> videos = videosMapper.selectAllByDesc(videoDesc);
 
         //给所有video加上用户属性
         for (Videos video1 : videos) {
@@ -94,6 +114,15 @@ public class VideoServiceImpl implements VideoService {
         pagedResult.setTotal(totalPage);
 
         return pagedResult;
+    }
+
+    /*
+    从数据库中分组并且按照次数排序得到热搜词
+     */
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public List<String> getHotWords() {
+        return searchRecordsMapper.getHotwords();
     }
 
 }
