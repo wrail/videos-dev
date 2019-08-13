@@ -1,9 +1,12 @@
 package com.wrial.service.impl;
 
 import com.wrial.mapper.UsersFansMapper;
+import com.wrial.mapper.UsersLikeVideosMapper;
 import com.wrial.mapper.UsersMapper;
 import com.wrial.pojo.Users;
 import com.wrial.pojo.UsersFans;
+import com.wrial.pojo.UsersLikeVideos;
+import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,10 +26,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsersFansMapper usersFansMapper;
-
     //全局ID
     @Autowired
     private Sid sid;
+
+    @Autowired
+    private UsersLikeVideosMapper usersLikeVideosMapper;
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -78,6 +83,24 @@ public class UserServiceImpl implements UserService {
         Users user = usersMapper.selectOneByExample(userExample);
         return user;
 
+    }
+
+    @Override
+    public boolean isUserLikeVideo(String loginUserId, String videoId) {
+
+        //如果是未登录用户就返回false，不用在数据库中查找
+        if (StringUtils.isBlank(loginUserId) || StringUtils.isBlank(videoId)) {
+            return false;
+        }
+        Example example = new Example(UsersLikeVideos.class);
+        example.createCriteria().andEqualTo("userId", loginUserId)
+                .andEqualTo("videoId", videoId);
+        List<UsersLikeVideos> videos = usersLikeVideosMapper.selectByExample(example);
+        if (videos.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

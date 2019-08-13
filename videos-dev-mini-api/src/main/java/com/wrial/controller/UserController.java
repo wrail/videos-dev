@@ -1,6 +1,7 @@
 package com.wrial.controller;
 
 import com.wrial.pojo.Users;
+import com.wrial.pojo.vo.PublisherVideo;
 import com.wrial.pojo.vo.UsersVO;
 import com.wrial.service.UserService;
 import com.wrial.utils.MyJSONResult;
@@ -107,4 +108,28 @@ public class UserController extends BasicController {
 
         return MyJSONResult.ok(userVO);
     }
+    @ApiOperation(value = "查询当前用户和发布者关系和发布者信息",notes = "得到当前用户和发布者关系和发布者信息")
+    @GetMapping("/queryPublisher")
+    public MyJSONResult queryPublisher(String loginUserId, String videoId,
+                                       String publishUserId) throws Exception {
+
+        if (StringUtils.isBlank(publishUserId)) {
+            return MyJSONResult.errorMsg("");
+        }
+
+        // 1. 查询视频发布者的信息
+        Users userInfo = userService.queryUserInfo(publishUserId);
+        UsersVO publisher = new UsersVO();
+        BeanUtils.copyProperties(userInfo, publisher);
+
+        // 2. 查询当前登录者和视频的点赞关系
+        boolean userLikeVideo = userService.isUserLikeVideo(loginUserId, videoId);
+
+        PublisherVideo bean = new PublisherVideo();
+        bean.setPublisher(publisher);
+        bean.setUserLikeVideo(userLikeVideo);
+
+        return MyJSONResult.ok(bean);
+    }
+
 }

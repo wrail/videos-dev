@@ -6,8 +6,12 @@ package com.wrial.controller;
  */
 
 import com.wrial.pojo.Bgm;
+import com.wrial.pojo.Users;
 import com.wrial.pojo.Videos;
+import com.wrial.pojo.vo.PublisherVideo;
+import com.wrial.pojo.vo.UsersVO;
 import com.wrial.service.BgmService;
+import com.wrial.service.UserService;
 import com.wrial.service.VideoService;
 import com.wrial.utils.FetchVideoCover;
 import com.wrial.utils.MergeVideoMp3;
@@ -17,6 +21,7 @@ import enums.VideoStatusEnum;
 import io.swagger.annotations.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +42,9 @@ public class VideoController extends BasicController {
 
     @Autowired
     private VideoService videoService;
+
+    @Autowired
+    private UserService userService;
 
 
     @ApiOperation(value = "上传视频", notes = "上传视频的接口")
@@ -248,6 +256,23 @@ public class VideoController extends BasicController {
     public MyJSONResult hot()  {
         return MyJSONResult.ok(videoService.getHotWords());
     }
+
+
+    @PostMapping(value="/userLike")
+    public MyJSONResult userLike(String userId, String videoId, String videoCreaterId)
+            throws Exception {
+        videoService.userLikeVideo(userId, videoId, videoCreaterId);
+        return MyJSONResult.ok();
+    }
+
+    @PostMapping(value="/userUnLike")
+    public MyJSONResult userUnLike(String userId, String videoId, String videoCreaterId) throws Exception {
+        videoService.userUnLikeVideo(userId, videoId, videoCreaterId);
+        return MyJSONResult.ok();
+    }
+
+
+
 
 
 }

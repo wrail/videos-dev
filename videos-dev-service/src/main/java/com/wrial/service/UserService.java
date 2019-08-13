@@ -24,7 +24,18 @@ public interface UserService {
      */
     void updateUserInfo(Users user);
 
+    /*
+    查询用户信息
+     */
     Users queryUserInfo(String userId);
 
+    /*
+    查询是否点过赞
+     */
+    boolean isUserLikeVideo(String loginUserId, String videoId);
+
+    /*
+    查询是否关注
+     */
     boolean queryIfFollow(String userId, String fanId);
 }

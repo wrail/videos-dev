@@ -31,5 +31,15 @@ public interface VideoService {
     /**
      * @Description: 拿到热搜词列表
      */
-    List<String> getHotWords();
+    public List<String> getHotWords();
+
+    /*
+    点赞
+     */
+    public void userLikeVideo(String userId, String videoId, String videoCreatorId);
+
+    /*
+    取消点赞
+     */
+    public void userUnLikeVideo(String userId, String videoId, String videoCreatorId);
 }
