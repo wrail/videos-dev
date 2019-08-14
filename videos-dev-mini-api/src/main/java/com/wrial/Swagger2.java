@@ -52,7 +52,7 @@ public class Swagger2 {
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
 				// 设置页面标题
-				.title("使用swagger2构建短视频后端api接口文档")
+				.title("短视频后端接口文档")
 				// 设置联系人
 				.contact(new Contact("Wrial", "http://xxxxxxxx", "w2806935450@163.com"))
 				// 描述

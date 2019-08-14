@@ -286,8 +286,9 @@ public class VideoController extends BasicController {
     }
 
     /*
-
+    分页展示我关注的人的所有动态视频
      */
+    @ApiOperation(value = "展示我关注的人的所有动态视频", notes = "分页展示我关注的人的所有动态视频接口")
     @GetMapping("/showMyFollow")
     public MyJSONResult showMyFollow(@RequestParam("userId") String userId,
                                      @RequestParam(value = "page",defaultValue = "1") Integer page,

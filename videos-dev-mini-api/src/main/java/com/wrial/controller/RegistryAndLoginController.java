@@ -54,6 +54,10 @@ public class RegistryAndLoginController extends BasicController {
         return MyJSONResult.ok(userVO);
     }
 
+    /*
+    提取出的方法
+     */
+
     public UsersVO setUserRedisSessionToken(Users user) {
         String uniqueToken = UUID.randomUUID().toString();
         String key = USER_REDIS_SESSION + ":" + user.getId();

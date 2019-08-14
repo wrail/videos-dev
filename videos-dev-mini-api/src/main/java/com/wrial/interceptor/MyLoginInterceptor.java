@@ -57,7 +57,6 @@ public class MyLoginInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
 
-
         /**
          * 返回 false：请求被拦截，返回
          * 返回 true ：请求OK，可以继续执行，放行
@@ -66,7 +65,7 @@ public class MyLoginInterceptor extends HandlerInterceptorAdapter {
     }
 
     public void returnErrorResponse(HttpServletResponse response, MyJSONResult result)
-            throws IOException, UnsupportedEncodingException {
+            throws IOException{
         OutputStream out = null;
         try {
             response.setCharacterEncoding("utf-8");
