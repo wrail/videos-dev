@@ -267,7 +267,7 @@ public class VideoController extends BasicController {
     }
 
     @ApiOperation(value = "取消点赞", notes = "取消点赞接口")
-    @DeleteMapping(value = "/userUnLike")
+    @PostMapping(value = "/userUnLike")
     public MyJSONResult userUnLike(String userId, String videoId, String videoCreaterId) throws Exception {
         videoService.userUnLikeVideo(userId, videoId, videoCreaterId);
         return MyJSONResult.ok();
