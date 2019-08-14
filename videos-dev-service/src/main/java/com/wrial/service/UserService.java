@@ -38,4 +38,14 @@ public interface UserService {
     查询是否关注
      */
     boolean queryIfFollow(String userId, String fanId);
+
+    /**
+     * @Description: 增加用户和粉丝的关系
+     */
+    public void saveUserFanRelation(String userId, String fanId);
+
+    /**
+     * @Description: 删除用户和粉丝的关系
+     */
+    public void deleteUserFanRelation(String userId, String fanId);
 }

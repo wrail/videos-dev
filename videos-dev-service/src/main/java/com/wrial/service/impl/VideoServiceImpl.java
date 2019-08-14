@@ -7,17 +7,12 @@ package com.wrial.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wrial.mapper.SearchRecordsMapper;
-import com.wrial.mapper.UsersLikeVideosMapper;
-import com.wrial.mapper.UsersMapper;
-import com.wrial.mapper.VideosMapper;
-import com.wrial.pojo.SearchRecords;
-import com.wrial.pojo.Users;
-import com.wrial.pojo.UsersLikeVideos;
-import com.wrial.pojo.Videos;
+import com.wrial.mapper.*;
+import com.wrial.pojo.*;
 import com.wrial.pojo.vo.VideosVO;
 import com.wrial.service.VideoService;
 import com.wrial.utils.PagedResult;
+import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,15 +32,14 @@ public class VideoServiceImpl implements VideoService {
     private Sid sid;
     @Autowired
     private VideosMapper videosMapper;
-
     @Autowired
     private UsersMapper usersMapper;
-
     @Autowired
     private SearchRecordsMapper searchRecordsMapper;
-
     @Autowired
     private UsersLikeVideosMapper usersLikeVideosMapper;
+    @Autowired
+    private UsersFansMapper usersFansMapper;
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -74,9 +68,11 @@ public class VideoServiceImpl implements VideoService {
      */
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public PagedResult getAllVideos(String videoDesc, Integer isSaveRecords, Integer pageNum, Integer pageSize) {
+    public PagedResult getAllVideos(String userId, String videoDesc, Integer isSaveRecords, Integer pageNum, Integer pageSize) {
 
-        if (videoDesc.equals("undefined")) {
+        List<Videos> videos = new ArrayList<>();
+
+        if (videoDesc.equals("undefined") || StringUtils.isBlank(videoDesc)) {
             videoDesc = "";
         }
 
@@ -91,8 +87,14 @@ public class VideoServiceImpl implements VideoService {
         List<VideosVO> videosVOS = new ArrayList<>();
 
         PageHelper.startPage(pageNum, pageSize);
-        //如果存在desc的话就进行模糊查询
-        List<Videos> videos = videosMapper.selectAllByDesc(videoDesc);
+        //如果存在desc的话就进行模糊查询 如果存在userId就也加上userId这个条件
+        //如果userId为空就正常查询
+        if (userId.equals("undefined") || StringUtils.isBlank(userId)) {
+
+            videos = videosMapper.selectAllByDesc(videoDesc);
+        } else {
+            videos = videosMapper.selectAllByDescAndId(userId, videoDesc);
+        }
 
         //给所有video加上用户属性
         for (Videos video1 : videos) {
@@ -164,6 +166,86 @@ public class VideoServiceImpl implements VideoService {
         videosMapper.reduceVideoLikeCount(videoId);
         // 3-用户受喜欢数量的累减
         usersMapper.reduceReceiveLikeCount(videoCreatorId);
+    }
+
+    /*
+    查询点赞过的视频
+     */
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedResult queryMyLikeVideos(String userId, Integer page, Integer pageSize) {
+
+        List<VideosVO> list = new ArrayList<>();
+
+
+        PageHelper.startPage(page, pageSize);
+        //1-查询当前用户喜欢的所有视频
+        Example example = new Example(UsersLikeVideos.class);
+        example.createCriteria()
+                .andEqualTo("userId", userId);
+        List<UsersLikeVideos> usersLikeVideos = usersLikeVideosMapper.selectByExample(example);
+
+        //包装为VideoVo （通过users_like_videos的两个属性分别查找信息并包装）
+        for (UsersLikeVideos usersLikeVideo : usersLikeVideos) {
+            VideosVO videosVO = new VideosVO();
+            Users user = usersMapper.selectByPrimaryKey(usersLikeVideo.getUserId());
+            Videos videos = videosMapper.selectByPrimaryKey(usersLikeVideo.getVideoId());
+            BeanUtils.copyProperties(videos, videosVO);
+            videosVO.setFaceImage(user.getFaceImage());
+            videosVO.setNickname(user.getNickname());
+            list.add(videosVO);
+        }
+
+        PageInfo<VideosVO> pageList = new PageInfo<>(list);
+
+        PagedResult pagedResult = new PagedResult();
+        pagedResult.setTotal(pageList.getPages());
+        pagedResult.setRows(list);
+        pagedResult.setPage(page);
+        pagedResult.setRecords(pageList.getTotal());
+
+        return pagedResult;
+    }
+
+    /*
+    分页查询我关注的人的视频
+     */
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedResult queryMyFollowVideos(String fanId, Integer page, Integer pageSize) {
+
+        List<VideosVO> list = new ArrayList<>();
+        PageHelper.startPage(page, pageSize);
+        //得到当前用户的所有粉丝
+        Example example = new Example(UsersFans.class);
+        example.createCriteria().andEqualTo("fanId", fanId);
+        List<UsersFans> myFellers = usersFansMapper.selectByExample(example);
+
+        //和上个方法一样进行包装
+        for (UsersFans feller : myFellers) {
+
+            Users users = usersMapper.selectByPrimaryKey(feller.getUserId());
+            Example example1 = new Example(Videos.class);
+            example1.createCriteria().andEqualTo("userId", users.getId());
+            List<Videos> videos = videosMapper.selectByExample(example1);
+            for (Videos video : videos) {
+                VideosVO videosVO = new VideosVO();
+                BeanUtils.copyProperties(video, videosVO);
+                videosVO.setNickname(users.getNickname());
+                videosVO.setFaceImage(users.getFaceImage());
+                list.add(videosVO);
+            }
+
+        }
+        PageInfo<VideosVO> pageList = new PageInfo<>(list);
+
+        PagedResult pagedResult = new PagedResult();
+        pagedResult.setTotal(pageList.getPages());
+        pagedResult.setRows(list);
+        pagedResult.setPage(page);
+        pagedResult.setRecords(pageList.getTotal());
+
+        return pagedResult;
     }
 
 

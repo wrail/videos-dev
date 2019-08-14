@@ -241,38 +241,65 @@ public class VideoController extends BasicController {
      */
     @ApiOperation(value = "分页展示", notes = "分页展示所有的视频")
     @GetMapping("/showAll")
-    public MyJSONResult showAll(@RequestParam(defaultValue = "null") String videoDesc,
+    public MyJSONResult showAll(@RequestParam(value = "userId", defaultValue = "") String userId,
+                                @RequestParam(value = "videoDesc", defaultValue = "") String videoDesc,
                                 @RequestParam(value = "isSaveRecords", defaultValue = "0") Integer isSaveRecords,
                                 @RequestParam(value = "page", defaultValue = "1") Integer pageNum,
                                 @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
 
-        PagedResult result = videoService.getAllVideos(videoDesc, isSaveRecords, pageNum, pageSize);
+        PagedResult result = videoService.getAllVideos(userId, videoDesc, isSaveRecords, pageNum, pageSize);
 
         return MyJSONResult.ok(result);
     }
 
-    @ApiOperation(value = "热搜词",notes = "得到热搜词")
-    @GetMapping(value="/hot")
-    public MyJSONResult hot()  {
+    @ApiOperation(value = "热搜词", notes = "得到热搜词接口")
+    @GetMapping(value = "/hot")
+    public MyJSONResult hot() {
         return MyJSONResult.ok(videoService.getHotWords());
     }
 
-
-    @PostMapping(value="/userLike")
+    @ApiOperation(value = "点赞", notes = "点赞接口")
+    @PostMapping(value = "/userLike")
     public MyJSONResult userLike(String userId, String videoId, String videoCreaterId)
             throws Exception {
         videoService.userLikeVideo(userId, videoId, videoCreaterId);
         return MyJSONResult.ok();
     }
 
-    @PostMapping(value="/userUnLike")
+    @ApiOperation(value = "取消点赞", notes = "取消点赞接口")
+    @DeleteMapping(value = "/userUnLike")
     public MyJSONResult userUnLike(String userId, String videoId, String videoCreaterId) throws Exception {
         videoService.userUnLikeVideo(userId, videoId, videoCreaterId);
         return MyJSONResult.ok();
     }
 
+    @ApiOperation(value = "展示所有点赞过的视频", notes = "获取喜欢的视频接口")
+    @GetMapping("/showMyLike")
+    public MyJSONResult showMyLike(@RequestParam(value = "userId") String userId,
+                                   @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                   @RequestParam(value = "size", defaultValue = "6") Integer pageSize) throws Exception {
+        if (StringUtils.isBlank(userId)) {
+            return MyJSONResult.ok();
+        }
+        PagedResult videosList = videoService.queryMyLikeVideos(userId, page, pageSize);
+        return MyJSONResult.ok(videosList);
+    }
 
+    /*
 
+     */
+    @GetMapping("/showMyFollow")
+    public MyJSONResult showMyFollow(@RequestParam("userId") String userId,
+                                     @RequestParam(value = "page",defaultValue = "1") Integer page,
+                                     @RequestParam(value = "pageSize",defaultValue = "6") Integer pageSize) throws Exception {
+
+        if (StringUtils.isBlank(userId)) {
+            return MyJSONResult.ok();
+        }
+        PagedResult videosList = videoService.queryMyFollowVideos(userId, page, pageSize);
+
+        return MyJSONResult.ok(videosList);
+    }
 
 
 }

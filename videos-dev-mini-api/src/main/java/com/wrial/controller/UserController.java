@@ -132,4 +132,30 @@ public class UserController extends BasicController {
         return MyJSONResult.ok(bean);
     }
 
+    @ApiOperation(value = "关注",notes = "关注接口")
+    @PostMapping("/beyourfans")
+    public MyJSONResult beyourfans(String userId, String fanId) throws Exception {
+
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(fanId)) {
+            return MyJSONResult.errorMsg("");
+        }
+
+        userService.saveUserFanRelation(userId, fanId);
+
+        return MyJSONResult.ok("关注成功...");
+    }
+
+    @ApiOperation(value = "取消关注",notes = "取消关注接口")
+    @PostMapping("/dontbeyourfans")
+    public MyJSONResult dontbeyourfans(String userId, String fanId) throws Exception {
+
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(fanId)) {
+            return MyJSONResult.errorMsg("");
+        }
+
+        userService.deleteUserFanRelation(userId, fanId);
+
+        return MyJSONResult.ok("取消关注成功...");
+    }
+
 }

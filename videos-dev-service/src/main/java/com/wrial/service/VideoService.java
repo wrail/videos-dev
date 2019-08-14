@@ -26,7 +26,7 @@ public interface VideoService {
     /**
      * @Description: 分页查询视频列表
      */
-    public PagedResult getAllVideos(String videoDesc, Integer isSaveRecords, Integer page, Integer pageSize);
+    public PagedResult getAllVideos(String userId, String videoDesc, Integer isSaveRecords, Integer page, Integer pageSize);
 
     /**
      * @Description: 拿到热搜词列表
@@ -42,4 +42,14 @@ public interface VideoService {
     取消点赞
      */
     public void userUnLikeVideo(String userId, String videoId, String videoCreatorId);
+
+    /*
+    分页查询我点赞过的视频
+     */
+    PagedResult queryMyLikeVideos(String userId, Integer page, Integer pageSize);
+
+    /*
+    分页查询我关注的人的视频
+     */
+    PagedResult queryMyFollowVideos(String userId, Integer page, Integer pageSize);
 }

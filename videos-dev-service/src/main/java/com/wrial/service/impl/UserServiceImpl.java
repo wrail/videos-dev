@@ -119,4 +119,40 @@ public class UserServiceImpl implements UserService {
 
         return false;
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void saveUserFanRelation(String userId, String fanId) {
+
+        String relId = sid.nextShort();
+
+        UsersFans userFan = new UsersFans();
+        userFan.setId(relId);
+        userFan.setUserId(userId);
+        userFan.setFanId(fanId);
+
+        usersFansMapper.insert(userFan);
+
+        usersMapper.addFansCount(userId);
+        usersMapper.addFellersCount(fanId);
+
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void deleteUserFanRelation(String userId, String fanId) {
+
+        Example example = new Example(UsersFans.class);
+        Example.Criteria criteria = example.createCriteria();
+
+        criteria.andEqualTo("userId", userId);
+        criteria.andEqualTo("fanId", fanId);
+
+        usersFansMapper.deleteByExample(example);
+
+        usersMapper.reduceFansCount(userId);
+        usersMapper.reduceFellersCount(fanId);
+
+    }
+
 }

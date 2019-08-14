@@ -2,6 +2,7 @@ package com.wrial.mapper;
 
 import com.wrial.util.MyMapper;
 import com.wrial.pojo.Users;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Update;
 
 public interface UsersMapper extends MyMapper<Users> {
@@ -21,20 +22,24 @@ public interface UsersMapper extends MyMapper<Users> {
 	/**
 	 * @Description: 增加粉丝数
 	 */
+	@Update("update users set fans_counts=fans_counts+1 where id=#{userId}")
 	public void addFansCount(String userId);
 	
 	/**
 	 * @Description: 增加关注数
 	 */
-	public void addFollersCount(String userId);
+	@Update("update users set follow_counts=follow_counts+1 where id=#{userId}")
+	public void addFellersCount(String userId);
 	
 	/**
 	 * @Description: 减少粉丝数
 	 */
+	@Update("update users set fans_counts=fans_counts-1 where id=#{userId}")
 	public void reduceFansCount(String userId);
 	
 	/**
 	 * @Description: 减少关注数
 	 */
-	public void reduceFollersCount(String userId);
+	@Update("update users set follow_counts=follow_counts-1 where id=#{userId}")
+	public void reduceFellersCount(String userId);
 }
