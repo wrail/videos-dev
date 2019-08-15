@@ -9,9 +9,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wrial.mapper.*;
 import com.wrial.pojo.*;
+import com.wrial.pojo.vo.CommentsVO;
 import com.wrial.pojo.vo.VideosVO;
 import com.wrial.service.VideoService;
 import com.wrial.utils.PagedResult;
+import com.wrial.utils.TimeAgoUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,6 +43,8 @@ public class VideoServiceImpl implements VideoService {
     private UsersLikeVideosMapper usersLikeVideosMapper;
     @Autowired
     private UsersFansMapper usersFansMapper;
+    @Autowired
+    private CommentsMapper commentsMapper;
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -246,6 +251,63 @@ public class VideoServiceImpl implements VideoService {
         pagedResult.setRecords(pageList.getTotal());
 
         return pagedResult;
+    }
+
+    /*
+    增加评论
+     */
+    @Override
+    public void saveComment(Comments comment) {
+        String id = sid.nextShort();
+        comment.setId(id);
+        comment.setCreateTime(new Date());
+        commentsMapper.insert(comment);
+    }
+
+    /*
+    分页去取评论
+     */
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public PagedResult getAllComments(String videoId, Integer page, Integer pageSize) {
+
+        List<CommentsVO> list = new ArrayList<>();
+        PageHelper.startPage(page, pageSize);
+        Example example = new Example(Comments.class);
+        example.createCriteria().andEqualTo("videoId", videoId);
+        List<Comments> comments = commentsMapper.selectByExample(example);
+
+        for (Comments comment : comments) {
+
+            Example example1 = new Example(Videos.class);
+            example1.createCriteria().andEqualTo("id", videoId);
+            Videos videos = videosMapper.selectOneByExample(example1);
+            Example example2 = new Example(Users.class);
+            example2.createCriteria().andEqualTo("id", videos.getUserId());
+            Users user = usersMapper.selectOneByExample(example2);
+            CommentsVO commentsVO = new CommentsVO();
+            BeanUtils.copyProperties(comment,commentsVO);
+            commentsVO.setNickname(user.getNickname());
+            commentsVO.setFaceImage(user.getFaceImage());
+            list.add(commentsVO);
+        }
+
+        /*
+        将时间转为几天前那种格式
+         */
+        for (CommentsVO c : list) {
+            String timeAgo = TimeAgoUtils.format(c.getCreateTime());
+            c.setTimeAgoStr(timeAgo);
+        }
+
+        PageInfo<CommentsVO> pageList = new PageInfo<>(list);
+
+        PagedResult grid = new PagedResult();
+        grid.setTotal(pageList.getPages());
+        grid.setRows(list);
+        grid.setPage(page);
+        grid.setRecords(pageList.getTotal());
+        return grid;
     }
 
 

@@ -6,10 +6,7 @@ package com.wrial.controller;
  */
 
 import com.wrial.pojo.Bgm;
-import com.wrial.pojo.Users;
 import com.wrial.pojo.Videos;
-import com.wrial.pojo.vo.PublisherVideo;
-import com.wrial.pojo.vo.UsersVO;
 import com.wrial.service.BgmService;
 import com.wrial.service.UserService;
 import com.wrial.service.VideoService;
@@ -21,7 +18,6 @@ import enums.VideoStatusEnum;
 import io.swagger.annotations.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

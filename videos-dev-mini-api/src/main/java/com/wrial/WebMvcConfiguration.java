@@ -38,7 +38,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .addPathPatterns("/user/**")
                 .addPathPatterns("/video/upload", "/video/uploadCover",
                         "/video/userLike", "/video/userUnLike",
-                        "/video/saveComment")
+                        "/comment/saveComment")
                 .addPathPatterns("/bgm/**")
                 .excludePathPatterns("/user/queryPublisher");
     }

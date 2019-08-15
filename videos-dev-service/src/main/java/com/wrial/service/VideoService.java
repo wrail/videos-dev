@@ -6,6 +6,7 @@ package com.wrial.service;
  */
 
 
+import com.wrial.pojo.Comments;
 import com.wrial.pojo.Videos;
 import com.wrial.utils.PagedResult;
 
@@ -52,4 +53,14 @@ public interface VideoService {
     分页查询我关注的人的视频
      */
     PagedResult queryMyFollowVideos(String userId, Integer page, Integer pageSize);
+
+    /*
+    保存评论
+     */
+    void saveComment(Comments comment);
+
+    /*
+    分页查找评论
+     */
+    PagedResult getAllComments(String videoId, Integer page, Integer pageSize);
 }

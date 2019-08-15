@@ -166,7 +166,7 @@ public class UserController extends BasicController {
         // 保存举报信息
         userService.reportUser(usersReport);
 
-        return MyJSONResult.errorMsg("举报成功!");
+        return MyJSONResult.ok("举报成功！");
     }
 
 }
