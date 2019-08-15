@@ -282,13 +282,22 @@ public class VideoServiceImpl implements VideoService {
             Example example1 = new Example(Videos.class);
             example1.createCriteria().andEqualTo("id", videoId);
             Videos videos = videosMapper.selectOneByExample(example1);
+
             Example example2 = new Example(Users.class);
-            example2.createCriteria().andEqualTo("id", videos.getUserId());
+            example2.createCriteria().andEqualTo("id", comment.getFromUserId());
             Users user = usersMapper.selectOneByExample(example2);
             CommentsVO commentsVO = new CommentsVO();
             BeanUtils.copyProperties(comment,commentsVO);
+
+            if(comment.getFatherCommentId()!=null
+                    && !comment.getFatherCommentId().equals("undefined")){
+                Comments comments1 = commentsMapper.selectByPrimaryKey(comment.getFatherCommentId());
+                Users users = usersMapper.selectByPrimaryKey(comments1.getFromUserId());
+                commentsVO.setToNickname(users.getNickname());
+            }
             commentsVO.setNickname(user.getNickname());
             commentsVO.setFaceImage(user.getFaceImage());
+
             list.add(commentsVO);
         }
 
