@@ -3,9 +3,11 @@ package com.wrial.service.impl;
 import com.wrial.mapper.UsersFansMapper;
 import com.wrial.mapper.UsersLikeVideosMapper;
 import com.wrial.mapper.UsersMapper;
+import com.wrial.mapper.UsersReportMapper;
 import com.wrial.pojo.Users;
 import com.wrial.pojo.UsersFans;
 import com.wrial.pojo.UsersLikeVideos;
+import com.wrial.pojo.UsersReport;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wrial.service.UserService;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -32,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsersLikeVideosMapper usersLikeVideosMapper;
+
+    @Autowired
+    private UsersReportMapper usersReportMapper;
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -153,6 +159,19 @@ public class UserServiceImpl implements UserService {
         usersMapper.reduceFansCount(userId);
         usersMapper.reduceFellersCount(fanId);
 
+    }
+
+    /*
+    举报，插入一条数据
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void reportUser(UsersReport userReport) {
+
+        String urId = sid.nextShort();
+        userReport.setId(urId);
+        userReport.setCreateDate(new Date());
+        usersReportMapper.insert(userReport);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.wrial.controller;
 
 import com.wrial.pojo.Users;
+import com.wrial.pojo.UsersReport;
 import com.wrial.pojo.vo.PublisherVideo;
 import com.wrial.pojo.vo.UsersVO;
 import com.wrial.service.UserService;
@@ -156,6 +157,16 @@ public class UserController extends BasicController {
         userService.deleteUserFanRelation(userId, fanId);
 
         return MyJSONResult.ok("取消关注成功...");
+    }
+
+    @ApiOperation(value = "举报",notes = "举报接口")
+    @PostMapping("/reportUser")
+    public MyJSONResult reportUser(@RequestBody UsersReport usersReport) {
+
+        // 保存举报信息
+        userService.reportUser(usersReport);
+
+        return MyJSONResult.errorMsg("举报成功!");
     }
 
 }

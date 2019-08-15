@@ -1,6 +1,7 @@
 package com.wrial.service;
 
 import com.wrial.pojo.Users;
+import com.wrial.pojo.UsersReport;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -48,4 +49,9 @@ public interface UserService {
      * @Description: 删除用户和粉丝的关系
      */
     public void deleteUserFanRelation(String userId, String fanId);
+
+    /**
+     * @Description: 举报用户
+     */
+    void reportUser(UsersReport usersReport);
 }
