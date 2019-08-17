@@ -42,4 +42,13 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .addPathPatterns("/bgm/**")
                 .excludePathPatterns("/user/queryPublisher");
     }
+
+    /*
+    配置ZKClient并进行初始化
+     */
+    @Bean(initMethod="init")
+    public ZKCuratorClient zkCuratorClient() {
+        return new ZKCuratorClient();
+    }
+
 }
