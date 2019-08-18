@@ -18,12 +18,12 @@ public interface VideosMapper extends MyMapper<Videos> {
     /*
     主页搜索，模糊搜索（模糊查询），个人页面搜索复用
      */
-    @Select("select * from videos where video_desc like concat('%',#{desc},'%') order by create_time desc")
+    @Select("select * from videos where status = 1 and video_desc like concat('%',#{desc},'%') order by create_time desc")
     List<Videos> selectAllByDesc(String desc);
     /*
 
      */
-    @Select("select * from videos where user_id = #{userId} and video_desc like concat('%',#{desc},'%') order by create_time desc")
+    @Select("select * from videos where status = 1 and user_id = #{userId} and video_desc like concat('%',#{desc},'%') order by create_time desc")
     List<Videos> selectAllByDescAndId(String userId, String desc);
 
     /*

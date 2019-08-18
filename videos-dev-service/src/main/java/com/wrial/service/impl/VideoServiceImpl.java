@@ -194,7 +194,11 @@ public class VideoServiceImpl implements VideoService {
         for (UsersLikeVideos usersLikeVideo : usersLikeVideos) {
             VideosVO videosVO = new VideosVO();
             Users user = usersMapper.selectByPrimaryKey(usersLikeVideo.getUserId());
-            Videos videos = videosMapper.selectByPrimaryKey(usersLikeVideo.getVideoId());
+            Example videoExample = new Example(Videos.class);
+            videoExample.createCriteria().andEqualTo("id", usersLikeVideo.getVideoId())
+                    .andEqualTo("status", 1);
+            Videos videos = videosMapper.selectOneByExample(videoExample);
+//            Videos videos = videosMapper.selectByPrimaryKey(usersLikeVideo.getVideoId());
             BeanUtils.copyProperties(videos, videosVO);
             videosVO.setFaceImage(user.getFaceImage());
             videosVO.setNickname(user.getNickname());
@@ -231,7 +235,8 @@ public class VideoServiceImpl implements VideoService {
 
             Users users = usersMapper.selectByPrimaryKey(feller.getUserId());
             Example example1 = new Example(Videos.class);
-            example1.createCriteria().andEqualTo("userId", users.getId());
+            example1.createCriteria().andEqualTo("userId", users.getId())
+                    .andEqualTo("status", 1);
             List<Videos> videos = videosMapper.selectByExample(example1);
             for (Videos video : videos) {
                 VideosVO videosVO = new VideosVO();
@@ -279,18 +284,19 @@ public class VideoServiceImpl implements VideoService {
 
         for (Comments comment : comments) {
 
-            Example example1 = new Example(Videos.class);
-            example1.createCriteria().andEqualTo("id", videoId);
-            Videos videos = videosMapper.selectOneByExample(example1);
+//            Example example1 = new Example(Videos.class);
+//            example1.createCriteria().andEqualTo("id", videoId)
+//                    .andEqualTo("status",1);
+//            Videos videos = videosMapper.selectOneByExample(example1);
 
             Example example2 = new Example(Users.class);
             example2.createCriteria().andEqualTo("id", comment.getFromUserId());
             Users user = usersMapper.selectOneByExample(example2);
             CommentsVO commentsVO = new CommentsVO();
-            BeanUtils.copyProperties(comment,commentsVO);
+            BeanUtils.copyProperties(comment, commentsVO);
 
-            if(comment.getFatherCommentId()!=null
-                    && !comment.getFatherCommentId().equals("undefined")){
+            if (comment.getFatherCommentId() != null
+                    && !comment.getFatherCommentId().equals("undefined")) {
                 Comments comments1 = commentsMapper.selectByPrimaryKey(comment.getFatherCommentId());
                 Users users = usersMapper.selectByPrimaryKey(comments1.getFromUserId());
                 commentsVO.setToNickname(users.getNickname());
